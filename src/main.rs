@@ -1,3 +1,5 @@
+mod decolor;
+
 fn main() {
-    println!("Hello, world!");
+    decolor::decolor(String::from("ca.pdf"));
 }
