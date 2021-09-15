@@ -4,9 +4,12 @@ use std::convert::Into;
 
 pub fn decolor(input_filename: String) {
 
+    // fs::remove_dir_all("split");
+    fs::create_dir("split");
+
     // convert PDF to PNG
     if cfg!(target_os = "windows") {
-        let _ = Command::new("imagemagick")
+        let _ = Command::new("magick")
                         .arg("convert")
                         // .arg("-density")
                         // .arg("300")
@@ -32,10 +35,6 @@ pub fn decolor(input_filename: String) {
                         .expect("Failed to split PDF and convert to PNG");
     }
 
-    fs::remove_dir_all("split");
-    fs::create_dir("split");
-
-
     let pages = fs::read_dir("split").unwrap();
     for page in pages {
 
@@ -58,9 +57,11 @@ pub fn decolor(input_filename: String) {
 
         profile_pixels(pixels);
 
-        // let img_buf: [u8] = pixels.into();
+        let width = greyscale_img.width();
+        let height = greyscale_img.height();
 
-        // image::ImageEncoder::write_image(&pixels.into(), )
+        // let img_buf: [u8] = pixels.into();
+        image::ImageEncoder::write_image(&pixels.into(), width, height, image::ColorType::L8);
     }
 
 }
