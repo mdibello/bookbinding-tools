@@ -50,18 +50,25 @@ pub fn decolor(input_filename: String) {
         let mut pixels: Vec<u8> = Vec::new();
         for p in greyscale_img.pixels() {
             match p {
-                image::Luma(x) => pixels.push(x[0]),
+                image::Luma(x) => {
+                    let pixel = x[0];
+                    if pixel < 100 {
+                        pixels.push(x[0]);
+                    } else {
+                        pixels.push(255);
+                    }
+                },
             }
 
         }
 
-        profile_pixels(pixels);
+        profile_pixels(pixels.clone());
 
         let width = greyscale_img.width();
         let height = greyscale_img.height();
 
-        // let img_buf: [u8] = pixels.into();
-        image::ImageEncoder::write_image(&pixels.into(), width, height, image::ColorType::L8);
+        // image::ImageEncoder::write_image(&pixels.into(), width, height, image::ColorType::L8);
+        image::save_buffer_with_format("split/post-page-0000.png", &pixels, width, height, image::ColorType::L8, image::ImageFormat::Png);
     }
 
 }
